@@ -1,15 +1,14 @@
 import os
 import shutil
-
-from typing import Optional, List, Union
 from pathlib import Path
+from typing import List, Optional, Union
 
 
 class DisplayablePath:
-    display_filename_prefix_middle = '├──'
-    display_filename_prefix_last = '└──'
-    display_parent_prefix_middle = '    '
-    display_parent_prefix_last = '│   '
+    display_filename_prefix_middle = "├──"
+    display_filename_prefix_last = "└──"
+    display_parent_prefix_middle = "    "
+    display_parent_prefix_last = "│   "
 
     def __init__(self, path, parent_path, is_last):
         self.path = Path(str(path))
@@ -31,12 +30,10 @@ class DisplayablePath:
         displayable_root = cls(root, parent, is_last)
         yield displayable_root
 
-        children = sorted([
-            path
-            for path
-            in root.iterdir()
-            if criteria(root, ignore)  # noqa
-        ], key=lambda s: str(s).lower())
+        children = sorted(
+            [path for path in root.iterdir() if criteria(root, ignore)],  # noqa
+            key=lambda s: str(s).lower(),
+        )
 
         count = 1
         for path in children:
@@ -47,7 +44,7 @@ class DisplayablePath:
                     parent=displayable_root,
                     is_last=is_last,
                     criteria=criteria,
-                    ignore=ignore
+                    ignore=ignore,
                 )
             else:
                 yield cls(path, displayable_root, is_last)
@@ -63,7 +60,7 @@ class DisplayablePath:
     @property
     def display_name(self):
         if self.path.is_dir():
-            return self.path.name + '/'
+            return self.path.name + "/"
         return self.path.name
 
     def displayable(self):
@@ -76,9 +73,7 @@ class DisplayablePath:
             else self.display_filename_prefix_middle
         )
 
-        parts = [
-            '{!s} {!s}'.format(_filename_prefix, self.display_name)
-        ]
+        parts = ["{!s} {!s}".format(_filename_prefix, self.display_name)]
 
         parent = self.parent
         while parent and parent.parent is not None:
@@ -89,15 +84,11 @@ class DisplayablePath:
             )
             parent = parent.parent
 
-        return ''.join(reversed(parts))
+        return "".join(reversed(parts))
 
 
 def build_settings_path(default_path: Union[str, Path]) -> str:
-    default_path = (
-        default_path
-        if default_path[0] == "s"
-        else default_path
-    )
+    default_path = default_path if default_path[0] == "s" else default_path
     return default_path
 
 
@@ -140,9 +131,14 @@ def copytree(
     for idx, item in enumerate(items):
         s = os.path.join(src, item)
         d = os.path.join(dst, item)
+
         if os.path.isdir(s):
             copytree(s, d, symlinks, ignore)
             continue
 
         if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
             shutil.copy2(s, d)
+
+
+def remove_tree(path):
+    return shutil.rmtree(path, ignore_errors=True)

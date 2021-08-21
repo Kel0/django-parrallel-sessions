@@ -11,6 +11,10 @@ class VenvTypes(Enum):
     pyenv = PyEnv
 
 
+class CommandsEndPatterns(Enum):
+    django: str = "Quit the server with CONTROL-C."
+
+
 @dataclass
 class BaseModel:
     def to_dict(self) -> dict:

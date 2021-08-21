@@ -13,7 +13,7 @@ class VEnvProtocol(Protocol):
 class VEnvTypeProtocol(Protocol):
     _manager = None
 
-    def validate(self, activate_path):
+    def validate(self, *args, **kwargs):
         """
         Make sure that venv is exist
         """
@@ -23,5 +23,8 @@ class VEnvTypeProtocol(Protocol):
 
 
 class ShellExecutorProtocol:
+    def add_to_exec_chain(self, activate_str):
+        pass
+
     def exec(self):
         pass
